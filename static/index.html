@@ -92,6 +92,7 @@
             <div class="input-group flex-nowrap">
                 <span class="input-group-text " id="addon-wrapping ">></span>
                 <input type="text" id="messageInput" class="form-control" placeholder="Message" aria-label="Message" aria-describedby="addon-wrapping ">
+                <span id="cooldown" class="input-group-text">0</span>
             </div>
         </main>
 
@@ -103,11 +104,14 @@
     </div>
 
     <script type="text/javascript">
-        function insertMsg(username, message, own) {
+        function insertMsg(username, message, sender) {
             var chat_history = $('#chat_history');
-            if (own) {
+            if (sender == 'myself') {
                 var msgRow = $('<div class="row rounded-3 p-2 justify-content-end"></div>');
                 var msgCard = $('<div class="card bg-success text-white"></div>');
+            } else if (sender == 'approved') {
+                var msgRow = $('<div class="row rounded-3 p-2 justify-content-end"></div>');
+                var msgCard = $('<div class="card bg-primary text-white"></div>');
             } else {
                 var msgRow = $('<div class="row rounded-3 p-2 justify-content-start"></div>');
                 var msgCard = $('<div class="card bg-dark text-white"></div>');
@@ -135,6 +139,21 @@
         }
     </script>
 
+    <script type="text/javascript">
+        function countdown() {
+            var timeleft = 5;
+            var downloadTimer = setInterval(function() {
+                if (timeleft <= 0) {
+                    clearInterval(downloadTimer);
+                    document.getElementById("cooldown").innerHTML = "0";
+                } else {
+                    document.getElementById("cooldown").innerHTML = timeleft;
+                }
+                timeleft -= 1;
+            }, 1000);
+        }
+    </script>
+
     <script type="text/javascript" charset="utf-8">
         var socket = io();
         var my_username = $('#username').text();
@@ -151,9 +170,11 @@
 
         socket.on('incoming', function(data) {
             if (data['username'] == my_username) {
-                insertMsg(data['username'], data['message'], true);
+                insertMsg(data['username'], data['message'], 'myself');
+            } else if (data['approved']) {
+                insertMsg(data['username'], data['message'], 'approved');
             } else {
-                insertMsg(data['username'], data['message'], false);
+                insertMsg(data['username'], data['message'], 'someoneelse');
             }
         });
 
@@ -161,10 +182,15 @@
         input.addEventListener("keyup", function(event) {
             if (event.key === "Enter" && input.value.length != 0) {
                 var msg = $('#messageInput').val();
-                socket.emit('message', {
-                    message: msg
-                });
-                $('#messageInput').val('');
+                if ($('#cooldown').text() == "0") {
+                    countdown();
+                    socket.emit('message', {
+                        message: msg
+                    });
+                    $('#messageInput').val('');
+                } else {
+                    alert("Biraz yavaş olsana artık ya.");
+                }
             }
         });
 
