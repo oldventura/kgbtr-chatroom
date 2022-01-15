@@ -2,9 +2,11 @@
 # -*- encoding:utf-8 -*-
 
 import secrets
+from time import time
 
+import praw
 from flask import Flask, render_template, request, session, redirect
-from flask_socketio import SocketIO, emit, join_room, leave_room
+from flask_socketio import SocketIO, disconnect, emit, join_room, leave_room
 from ratelimit import limits
 
 app = Flask(__name__, template_folder='static')
@@ -17,12 +19,18 @@ socketio = SocketIO(app)
 _CALLS = 100
 _PERIOD = 60
 
+PRAW_CLIENT_ID = ""
+PRAW_CLIENT_SECRET = ""
+PRAW_REDIRECT_URI = ""
+
 # SocketIO
 
 
 @socketio.on('joinRoom')
 def join_user_into_room(data=None):
-    if 'username' in session:
+    if 'username' not in session:
+        disconnect()
+    else:
         if data:
             # Join Room
             join_room('KGBTR')
@@ -63,6 +71,8 @@ def handle_json(data=None):
                 "username": session['username'],
                 "message": data['message'],
             }, to='KGBTR')
+    else:
+        disconnect()
 
 # PAGES
 
@@ -97,6 +107,33 @@ def check():
         else:
             data = {"status": "failure"}
             return data, 401
+
+
+@app.route('/reddit_login')
+@limits(calls=_CALLS, period=_PERIOD)
+def reddit_login():
+    reddit = praw.Reddit(
+        client_id=PRAW_CLIENT_ID,
+        client_secret=PRAW_CLIENT_SECRET,
+        redirect_uri=PRAW_REDIRECT_URI,
+        user_agent="kgbtr-chatroom by u/oldventura"
+    )
+
+    if 'code' not in request.args:
+        return redirect(reddit.auth.url(['identity'], 'login', "temporary"))
+
+    try:
+        reddit.auth.authorize(request.args['code'])
+        user = reddit.user.me()
+        if time() - user.created_utc < 30 * 24 * 60 * 60:
+            # Account should be older than a month.
+            return 'Account too young.', 403
+        session['username'] = user.name
+    except:
+        # TODO: OAuthException instead of bare except
+        return 'Invalid code.', 403
+
+    return redirect("/")
 
 # Static Content
 
