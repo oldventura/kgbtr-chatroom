@@ -96,65 +96,6 @@
         </div>
     </main>
 
-    <script>
-        $(document).ready(function() {
-            $('.popping').popover({
-                trigger: 'manual',
-                title: 'Error',
-                content: 'This username is being used right now, please select another one.',
-                placement: 'top'
-            });
-            $('.username-error').popover({
-                trigger: 'manual',
-                title: 'Error',
-                content: 'You can not use this username, please select another one.',
-                placement: 'right'
-            });
-            $('#username').on('shown.bs.popover', function() {
-                $('body').click(function() {
-                    $('#username').popover('hide');
-                    $('body').off();
-                });
-            });
-            $('#enterRoomButton').on('shown.bs.popover', function() {
-                $('body').click(function() {
-                    $('#enterRoomButton').popover('hide');
-                    $('body').off();
-                });
-            });
-        });
-    </script>
-
-    <script type="text/javascript">
-        function enterRoom() {
-            var username = $('#username').val();
-            if (username.length != 0) {
-                $.ajax({
-                    url: "/check_username",
-                    type: 'POST',
-                    cache: false,
-                    data: {
-                        username: username
-                    },
-                    success: function() {
-                        window.location.replace("/");
-                    },
-                    error: function(error) {
-                        if (error.responseJSON['status'] == 'failure') {
-                            console.log('failure attempt');
-                            $('#username').popover("show");
-                        }
-
-                        if (error.responseJSON['status'] == 'unauthorized') {
-                            console.log('unauthorized attempt');
-                            $('#enterRoomButton').popover("show");
-                        }
-                    }
-                });
-            }
-        }
-    </script>
-
 </body>
 
 </html>
