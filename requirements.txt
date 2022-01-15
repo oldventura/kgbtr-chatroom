@@ -5,3 +5,4 @@ ratelimit
 gevent
 gevent-websocket
 flask-socketio
+praw

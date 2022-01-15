@@ -80,7 +80,7 @@
                         <span id="online_count" class="badge bg-primary">0</span>
                     </p>
                     <div class="me-3 py-2 text-dark text-decoration-none d-grid gap-2 d-md-block">
-                        <button id="disconnectButton" class="btn btn-outline-primary btn-sm">Quit</button>
+                        <a id="disconnectButton" class="btn btn-outline-primary btn-sm" href="/logout">Quit</a>
                     </div>
                 </nav>
             </div>
@@ -109,9 +109,12 @@
             if (sender == 'myself') {
                 var msgRow = $('<div class="row rounded-3 p-2 justify-content-end"></div>');
                 var msgCard = $('<div class="card bg-success text-white"></div>');
-            } else if (sender == 'approved') {
+            } else if (sender == 'mod') {
                 var msgRow = $('<div class="row rounded-3 p-2 justify-content-end"></div>');
                 var msgCard = $('<div class="card bg-primary text-white"></div>');
+            } else if (sender == 'info') {
+                var msgRow = $('<div class="row rounded-3 p-2 justify-content-end"></div>');
+                var msgCard = $('<div class="card bg-danger text-white"></div>');
             } else {
                 var msgRow = $('<div class="row rounded-3 p-2 justify-content-start"></div>');
                 var msgCard = $('<div class="card bg-dark text-white"></div>');
@@ -171,10 +174,8 @@
         socket.on('incoming', function(data) {
             if (data['username'] == my_username) {
                 insertMsg(data['username'], data['message'], 'myself');
-            } else if (data['approved']) {
-                insertMsg(data['username'], data['message'], 'approved');
             } else {
-                insertMsg(data['username'], data['message'], 'someoneelse');
+                insertMsg(data['username'], data['message'], data['type']);
             }
         });
 
@@ -192,12 +193,6 @@
                     alert("Biraz yavaş olsana artık ya.");
                 }
             }
-        });
-
-        $('#disconnectButton').click(function() {
-            console.log("bye.");
-            socket.close();
-            window.location.replace("/login");
         });
     </script>
 
