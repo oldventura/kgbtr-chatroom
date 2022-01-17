@@ -111,7 +111,7 @@ def handle_json(data=None):
             # Normal Procedure
             print(f"{escape(session['username'])}", request.headers.get(
                 'X-Forwarded-For', request.remote_addr))
-            if not session['last'] or int(time.time()) - int(session['last']) > 5:
+            if not session['last'] or (float(time.time()) - float(session['last']) >= 2.5):
                 if escape(session['username']) in app.auth:
                     status = 'mod'
                 else:
@@ -122,7 +122,7 @@ def handle_json(data=None):
                     "username": escape(session['username']),
                     "message": escape(data['message'][:128]),
                 }, to='KGBTR')
-                session['last'] = time.time()
+                session['last'] = float(time.time())
     else:
         disconnect()
 
@@ -218,7 +218,7 @@ def oauth():
 @limits(calls=_CALLS, period=_PERIOD)
 def login():
     if request.method == 'GET':
-        return render_template("login.html")
+        return render_template("login.html", online=len(app.users))
     else:
         return redirect(app.address+"/login")
 

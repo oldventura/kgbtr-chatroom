@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta name="description" content="KGBTR Chatroom">
     <meta name="author" content="oldventura">
     <link rel="shortcut icon" type="image/svg+xml" href="favicon.svg">
@@ -93,10 +93,10 @@
             </div>
         </header>
         <main>
-            <div id="chat_history" class="container rounded-3 mb-2 overflow-auto border border-dark" style="height:400px;">
+            <div id="chat_history" class="container rounded-3 mb-2 overflow-auto border border-dark textured" style="height:400px;">
             </div>
             <div id="messagediv" class="input-group flex-nowrap">
-                <span class="input-group-text " id="addon-wrapping ">></span>
+                <button id="scrollLock" class="input-group-text bi bi-arrow-bar-right" id="addon-wrapping"></button>
                 <input type="text" id="messageInput" data-trigger="focus" class="form-control" placeholder="Message" aria-label="Message" aria-describedby="addon-wrapping ">
                 <span id="cooldown" class="input-group-text">0</span>
             </div>
@@ -145,9 +145,8 @@
             msgCard.append(`<p>${message}</p>`);
             msgRow.append(msgCard);
 
-            let atBottom = (chat_history[0].scrollHeight == (chat_history[0].clientHeight + chat_history.scrollTop()));
             chat_history.append(msgRow);
-            if (atBottom) {
+            if ($('#scrollLock').hasClass('bi-arrow-bar-down')) {
                 chat_history.scrollTop(chat_history[0].scrollHeight);
             };
         }
@@ -166,16 +165,18 @@
 
     <script type="text/javascript">
         function countdown() {
-            var timeleft = 5;
+            var timeleft = 2.5;
+            var timeDisplay = 5;
             var downloadTimer = setInterval(function() {
                 if (timeleft <= 0) {
                     clearInterval(downloadTimer);
                     document.getElementById("cooldown").innerHTML = "0";
                 } else {
-                    document.getElementById("cooldown").innerHTML = timeleft;
+                    document.getElementById("cooldown").innerHTML = timeDisplay;
                 }
-                timeleft -= 1;
-            }, 1000);
+                timeleft -= 0.5;
+                timeDisplay -= 1;
+            }, 500);
         }
     </script>
 
@@ -214,6 +215,16 @@
                 } else {
                     $('#messageInput').popover("show");
                 }
+            }
+        });
+
+        $('#scrollLock').click(function() {
+            if ($('#scrollLock').hasClass('bi-arrow-bar-right')) {
+                $('#scrollLock').removeClass('bi-arrow-bar-right');
+                $('#scrollLock').addClass('bi-arrow-bar-down');
+            } else {
+                $('#scrollLock').removeClass('bi-arrow-bar-down');
+                $('#scrollLock').addClass('bi-arrow-bar-right');
             }
         });
     </script>
