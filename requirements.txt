@@ -1,8 +1,0 @@
-flask
-requests
-gunicorn
-ratelimit
-gevent
-gevent-websocket
-flask-socketio
-praw
