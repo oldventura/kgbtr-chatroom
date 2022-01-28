@@ -4,6 +4,8 @@
 
 Take a look at the website or create a new issue to make it possible to add new features to the chat app.
 
+<img src="https://raw.githubusercontent.com/oldventura/kgbtr-chatroom/main/screenshot.png"></img>
+
 ## Features
 - Login with Reddit OAuth2
 - Only subscribed users to r/KGBTR can join
