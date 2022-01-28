@@ -19,5 +19,6 @@ Take a look at the website or create a new issue to make it possible to add new 
 - Support for links
 - User mentions
 - Mods have distinguished colors
+- User ban for mods
 - Uses Flask-Login for long-term sessions
 - Notifications through reddit app for user mentions
