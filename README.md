@@ -5,3 +5,19 @@
 Take a look at the website or create a new issue to make it possible to add new features to the chat app.
 
 ## Features
+- Login with Reddit OAuth2
+- Only subscribed users to r/KGBTR can join
+- Simple but enjoyable design
+- Dark Mode
+- See online user count without signing in
+- See the list of online users
+- Auto scrolldown
+- Switch to enable/disable scrolldown
+- Cooldown
+- Character limit for text input
+- Escaped usernames and messages
+- Support for links
+- User mentions
+- Mods have distinguished colors
+- Uses Flask-Login for long-term sessions
+- Notifications through reddit app for user mentions
