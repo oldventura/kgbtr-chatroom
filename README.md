@@ -19,7 +19,7 @@ Take a look at the website or create a new issue to make it possible to add new 
 - Character limit for text input
 - Escaped usernames and messages
 - Support for links
-- User mentions
+- Mention users with @username
 - Mods have distinguished colors
 - User ban for mods
 - Uses Flask-Login for long-term sessions
