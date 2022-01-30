@@ -25,3 +25,4 @@ Take a look at the website or create a new issue to make it possible to add new 
 - Uses Flask-Login for long-term sessions
 - Notifications through reddit app for user mentions
 - PNG and GIF Stickers
+- Markdown styling support
